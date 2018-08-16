@@ -4,6 +4,13 @@
     //var individuo = [];
     //var populacao = [];
 
+    function init() {
+        var populacao_inicial = genesis(4);
+        calculoDeAptidao(populacao_inicial);
+    }
+
+    init();
+
     function genesis(tamPoulacao) {
       var populacao = [];
       var individuo = [];
@@ -19,16 +26,32 @@
     }
 
     function calculoDeAptidao(populacao){
-        var 
+        var aptidao = [];
 
+        populacao.forEach((individuo)=>{
+            aptidao.push(individuoToVal(individuo));
+        });
+
+        return aptidao;
     }
 
-    console.log(genesis(4));
+
 
     function getRandomInt(min, max) {
         min = Math.ceil(min);
         max = Math.floor(max);
         return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function individuoToVal(individuo) {
+        var valor = 0;
+        var cont = 0;
+        individuo.forEach((gene)=>{
+            valor+= Math.pow(gene, cont);
+            cont++
+        });
+
+        return valor;
     }
 
 
