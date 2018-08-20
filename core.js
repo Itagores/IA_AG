@@ -1,38 +1,66 @@
 (()=>{
 
+    const max = 16777215, precisao = 0.0005;
     var quant_genes = 4;
-    //var individuo = [];
-    //var populacao = [];
 
     function init() {
-        var populacao_inicial = genesis(4);
-        calculoDeAptidao(populacao_inicial);
+        var populacao = genesis(quant_genes);
+        var controle = true;
+        var iter = 0;
+
+        while(controle){
+            console.log("população "+iter, populacao);
+            populacao.forEach(function (inidividuo) {
+                calculoDeAptidao(inidividuo);
+                if(inidividuo <= precisao){
+                    controle = false;
+                }else{
+                    populacao = cruzamento(populacao);
+                }
+            });
+
+
+            controle = false;
+            iter++;
+        }
+
     }
 
     init();
 
+    function cruzamento(populacao) {
+        var filhos = [];
+        var roleta = {
+            valores : [],
+            total : 0
+        };
+        populacao.forEach(function (individuo) {
+            let x = individuo >> 12;
+            let y = individuo & 4096;
+            x  = toReal(x);
+            y = toReal(y);
+        });
+    }
+
+    function toReal(valor) {
+        return -1+(2/(Math.pow(2,12)-1))*valor
+    }
+
     function genesis(tamPoulacao) {
       var populacao = [];
-      var individuo = [];
       for(var i = 0; i<tamPoulacao; i++){
-        for(var j = 0; j<quant_genes; j++) {
-            individuo.push(getRandomInt(0,1));
-        }
-        populacao.push(individuo);
-        individuo = [];
+          var individuo = getRandomInt(0, max);
+          populacao.push(individuo);
       }
-
       return populacao;
     }
 
-    function calculoDeAptidao(populacao){
-        var aptidao = [];
-
-        populacao.forEach((individuo)=>{
-            aptidao.push(individuoToVal(individuo));
-        });
-
-        return aptidao;
+    function calculoDeAptidao(individuo){
+        let x = individuo >> 12;
+        let y = individuo & 4096;
+        x  = toReal(x);
+        y = toReal(y);
+        return Math.abs(Math.pow(Math.E,-x)-Math.pow(y,2)+1)+Math.pow(10,-4);
     }
 
 
